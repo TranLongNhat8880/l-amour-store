@@ -33,3 +33,9 @@ Thumbs.db
 
 # Assets folder (lưu tạm, không cần trong repo)
 /assets/
+
+# Scratch / migration scripts (chỉ dùng khi dev)
+backend/scratch_*.js
+
+# Tài liệu import (không cần trong repo)
+frontend/src/imports/

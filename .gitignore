@@ -30,3 +30,6 @@ Thumbs.db
 *.docx
 *.doc
 *.txt
+
+# Assets folder (lưu tạm, không cần trong repo)
+/assets/

@@ -24,3 +24,9 @@ Thumbs.db
 
 # Expo
 .expo/
+
+# Documents (không cần thiết trong repo)
+*.pdf
+*.docx
+*.doc
+*.txt

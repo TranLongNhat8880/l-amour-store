@@ -1,0 +1,341 @@
+CHƯƠNG I: TỔNG QUAN VỀ ĐỀ TÀI 
+1.1 Lý do chọn đề tài 
+Thương mại điện tử đang là xu thế tất yếu trong thói quen tiêu dùng hiện đại. Tuy nhiên, 
+việc kinh doanh các mặt hàng thời trang đặc thù và nhạy cảm (như đồ lót, corset, phụ 
+kiện cá nhân) đặt ra những bài toán hệ thống rất phức tạp về quản lý biến thể sản phẩm 
+(nhiều hệ kích cỡ chéo nhau, đa dạng màu sắc) và yêu cầu sự tinh tế tuyệt đối trong trải 
+nghiệm mua sắm của khách hàng. 
+Thực tế, nhiều nền tảng bán lẻ quy mô nhỏ hiện nay gặp khó khăn trong việc tổ chức 
+cơ sở dữ liệu sản phẩm một cách logic, hoặc thiếu các tính năng bảo vệ sự riêng tư cho 
+người mua. Đề tài "Xây dựng Website Thương mại điện tử chuyên doanh Thời trang và 
+Phụ kiện cá nhân nam nữ" được thực hiện nhằm áp dụng các kỹ thuật thiết kế cơ sở dữ 
+liệu chặt chẽ để giải quyết bài toán phân loại hàng hóa phức tạp, đồng thời xây dựng 
+một luồng xử lý đơn hàng tự động, riêng tư và thân thiện với người dùng. 
+1.2 Mục tiêu dự án 
+Mục tiêu chính của đồ án là xây dựng một hệ thống Web quản lý bán hàng hoàn chỉnh 
+với các đặc điểm: 
+• 
+Quản lý dữ liệu thông minh: Xử lý và lưu trữ mượt mà hệ thống biến thể sản 
+phẩm đa chiều (Product Variants) bao gồm Size chữ (S, M, L), Size số (36, 37) 
+và Size cúp ngực (34A, 36B),… kết hợp với màu sắc. 
+• 
+Trải nghiệm mua sắm tinh tế: Tích hợp tính năng đặc thù "Giao hàng kín đáo" 
+(Discreet Shipping) ngay trong luồng thanh toán, tự động ẩn danh tên sản phẩm 
+nhạy cảm trên hóa đơn giao hàng để bảo vệ quyền riêng tư. 
+• 
+Tìm kiếm và lọc đa điều kiện: Cho phép người dùng tra cứu sản phẩm chính 
+xác theo nhiều tiêu chí cùng lúc (Danh mục cha/con, Khoảng giá, Size, Màu sắc). 
+• 
+Quản trị hệ thống (Admin Panel) toàn diện: Xây dựng khu vực hậu đài bảo 
+mật cho phép Quản trị viên theo dõi tồn kho, thao tác thêm/sửa/xóa (CRUD) sản 
+phẩm và quản lý trạng thái đơn hàng xuyên suốt. 
+• 
+Giao diện trực quan: Thiết kế luồng thao tác (UI/UX) rõ ràng, đặt trọng tâm 
+vào việc hiển thị thông tin sản phẩm và giỏ hàng mạch lạc, dễ hiểu. 
+1.3. Phạm vi nghiên cứu 
+• 
+Đối tượng sử dụng: Hệ thống phân quyền rõ ràng bao gồm Khách hàng (Tìm 
+kiếm, Đặt hàng, Quản lý tài khoản) và Quản trị viên (Quản lý toàn bộ dữ liệu, 
+Xử lý đơn hàng). 
+• 
+Nền tảng triển khai: Web Application chạy trên các trình duyệt phổ biến 
+(Chrome, Edge, Safari...) với giao diện tương thích đa thiết bị (Responsive 
+Design). 
+• 
+Giới hạn hệ thống: 
+o Hệ thống tập trung chuyên sâu vào ngành hàng thời trang nam/nữ, đồ lót 
+nữ sexy và phụ kiện cá nhân tiêu chuẩn. 
+o Quy trình thanh toán trong giai đoạn này tập trung hoàn thiện luồng xử lý 
+logic giỏ hàng và phương thức thanh toán khi nhận hàng (COD). Chưa 
+tích hợp trực tiếp API của các Cổng thanh toán điện tử thật (như VNPay, 
+Momo) hay hệ thống của bên vận chuyển thứ 3. 
+ 
+ 
+CHƯƠNG II: PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG 
+2.1. Yêu cầu chức năng (Functional Requirements) 
+Hệ thống được thiết kế và phân quyền dựa trên 3 nhóm đối tượng người dùng (Tác 
+nhân/Actors) chính, bao gồm: 
+1. Nhóm chức năng dành cho khách vãng lai (Guest): Khách vãng lai là những 
+người truy cập vào hệ thống nhưng chưa đăng nhập hoặc chưa có tài khoản. Họ được 
+cấp quyền thực hiện các thao tác cơ bản để tìm hiểu thông tin. 
+• 
+Duyệt danh mục sản phẩm: Xem cấu trúc cây danh mục (Thời trang 
+Nam/Nữ, Đồ lót, Corset, Phụ kiện, Giày dép, lưu ý các đồ như đồ lót hoặc 
+corset, phụ kiện yêu cầu user đăng nhập để xác thực tuổi). 
+• 
+Tìm kiếm và Lọc đa điều kiện (Filter): Tra cứu giao nhau giữa các biến thể 
+(Khoảng giá, Màu sắc, Hệ Size chữ S/M/L, Hệ Size số 36/37, Hệ Size cúp ngực 
+34A/36B,…). 
+• 
+Xem chi tiết sản phẩm: Xem hình ảnh, mô tả, chọn Tổ hợp biến thể (Màu sắc 
++ Kích cỡ) và kiểm tra trạng thái tồn kho thực tế (Real-time stock). 
+• 
+Quản lý giỏ hàng tạm thời: Thêm, sửa số lượng, xóa sản phẩm khỏi giỏ. 
+• 
+Xác thực: Đăng ký tài khoản mới, Đăng nhập hệ thống, Khôi phục mật khẩu 
+qua Email, Xác thực OTP bằng nodemailer. 
+2. Nhóm chức năng dành cho khách hàng thành viên (User): Thành viên là những 
+người đã đăng nhập vào hệ thống. Họ kế thừa toàn bộ quyền của khách vãng lai, cộng 
+thêm các chức năng giao dịch và quản lý cá nhân. 
+• 
+Quản lý hồ sơ cá nhân: Cập nhật thông tin liên hệ, đổi mật khẩu, thiết lập và 
+lưu trữ sổ địa chỉ nhận hàng mặc định. 
+• 
+Tiến hành đặt hàng (Checkout): Chuyển đổi giỏ hàng thành đơn đặt hàng 
+thực tế với phương thức thanh toán khi nhận hàng (COD). 
+• 
+Tính năng ẩn danh (Discreet Shipping): Được quyền kích hoạt tùy chọn 
+"Giao hàng kín đáo" tại bước thanh toán để hệ thống tự động ghi đè tên các mặt 
+hàng nhạy cảm thành "Phụ kiện thời trang" trên phiếu giao hàng. 
+• 
+Quản lý đơn hàng: Theo dõi lịch sử giao dịch và cập nhật trạng thái của các 
+đơn hàng đang xử lý (Chờ xác nhận, Đang giao, Thành công). 
+• 
+Feedback đơn hàng: User có quyền đánh giá sản phẩm đã ở trạng thái giao 
+hàng thành công. 
+3. Nhóm chức năng dành cho Quản trị viên (Admin): Quản trị viên là người nắm 
+toàn quyền điều hành hệ thống thông qua một khu vực hậu đài (Backend/Dashboard) 
+riêng biệt và bảo mật. 
+- Admin kế thừa toàn bộ chức năng của User kèm thêm một số chức năng quản trị: 
+• 
+Quản lý Danh mục (Category Management): Thêm, sửa, xóa, ẩn/hiện các 
+danh mục hàng hóa. 
+• 
+Quản lý Sản phẩm và Biến thể (Product & Variant Management): Thao tác 
+dữ liệu sâu, thiết lập một sản phẩm cha đi kèm nhiều biến thể con, giá bán, 
+size, màu và tồn kho riêng biệt cho từng biến thể). 
+• 
+Quản lý Đơn hàng (Order Management): Duyệt đơn, cập nhật luồng trạng 
+thái đơn hàng (Chờ xác nhận -> Đang chuẩn bị hàng -> Đang giao hàng -> 
+Thành công / Đã hủy). 
+• 
+Quản lý Người dùng (User Management): Xem danh sách tài khoản khách 
+hàng, khóa/mở khóa tài khoản khi có dấu hiệu bất thường. 
+• 
+Thống kê và Báo cáo (Dashboard Analytics): Theo dõi các chỉ số tổng quan 
+như số lượng đơn hàng mới, sản phẩm sắp hết tồn kho và doanh thu tạm tính. 
+• 
+Gửi thông báo hệ thống hoặc tạo thông báo: Admin có thể tự tạo thông báo 
+gửi cho toàn bộ user hoặc tạo thông báo định kỳ hệ thống. 
+• 
+Tạo voucher: Admin có thể tạo voucher có thời hạn sử dụng cho người dùng 
+và gửi vào thông báo 
+2.2. Kiến trúc hệ thống (System Architecture) 
+Hệ thống sử dụng mô hình Client-Server giao tiếp chủ yếu qua chuẩn RESTful API, 
+đảm bảo tính độc lập giữa giao diện hiển thị và logic xử lý dữ liệu. 
+1. Client (Frontend - Nền tảng: ReactJS): 
+• 
+Quản lý State (Trạng thái cục bộ): Xử lý logic giỏ hàng (thêm, bớt, tính tổng 
+tiền tạm thời) ngay trên trình duyệt của người dùng trước khi gửi yêu cầu lên 
+Server, giúp giảm tải cho hệ thống. 
+• 
+Xử lý luồng dữ liệu: Gọi các API từ Backend để lấy danh sách sản phẩm, biến 
+thể, hiển thị thông báo (Notification) và quản lý phiên đăng nhập 
+(Token/Cookie). 
+2. Server (Backend - Nền tảng: Node.js kết hợp ExpressJS): 
+• 
+API Server: Xây dựng hệ thống RESTful API cung cấp các điểm neo 
+(endpoints) cho Frontend gọi dữ liệu. 
+• 
+Middleware & Xác thực (Authentication): Xử lý đăng nhập, cấp phát và xác 
+thực JWT (JSON Web Token), đồng thời phân quyền chặt chẽ các Route (ví dụ: 
+chặn User thường truy cập vào API tạo Voucher của Admin). 
+• 
+Business Logic (Xử lý nghiệp vụ lõi): Chịu trách nhiệm thực hiện các phép 
+tính nhạy cảm như áp dụng Voucher, kiểm tra tồn kho theo thời gian thực (tránh 
+tình trạng đặt lố hàng), và kích hoạt tính năng "Giao hàng kín đáo" (Discreet 
+Shipping) trước khi lưu đơn. 
+• 
+Quản lý File: Xử lý luồng upload và lưu trữ hình ảnh sản phẩm, avatar người 
+dùng. 
+3. Database 
+• 
+MySQL 
+2.3. Thiết kế Cơ sở dữ liệu (Database Schema) 
+Hệ thống được thiết kế theo mô hình quan hệ (RDBMS) với các bảng (Tables) lõi 
+được chuẩn hóa để tránh dư thừa dữ liệu và xử lý mượt mà bài toán "Biến thể sản 
+phẩm". 
+1. Bảng Users (Người dùng) Quản lý thông tin đăng nhập, hồ sơ cá nhân và phân 
+quyền. 
+• 
+id (INT, Primary Key): Mã người dùng tự tăng. 
+• 
+email (VARCHAR, Unique): Email đăng nhập. 
+• 
+password (VARCHAR): Mật khẩu đã được mã hóa (Hash). 
+• 
+full_name, phone, address (VARCHAR): Thông tin liên hệ cơ bản. 
+• 
+avatar_url (VARCHAR, Nullable): Đường dẫn lưu trữ ảnh đại diện của người 
+dùng. 
+• 
+role (ENUM): Quyền hạn ('admin', 'user'). 
+• 
+is_active (BOOLEAN): Cờ trạng thái tài khoản (Mở/Khóa). 
+2. Bảng Categories (Danh mục sản phẩm) Sử dụng cấu trúc đệ quy (Self-
+referencing) để tạo cây danh mục cha - con. 
+• 
+id (INT, Primary Key) 
+• 
+name (VARCHAR): Tên danh mục (Đồ lót, Corset, Phụ kiện...). 
+• 
+parent_id (INT, Foreign Key): Trỏ về chính bảng Categories để phân cấp. 
+• 
+is_age_restricted (BOOLEAN): Cờ đánh dấu danh mục nhạy cảm, yêu cầu 
+đăng nhập để xác thực. 
+3. Bảng Products (Sản phẩm gốc) Lưu trữ thông tin chung và hình ảnh đại diện 
+(Thumbnail) của sản phẩm. 
+• 
+id (INT, Primary Key) 
+• 
+category_id (INT, Foreign Key): Thuộc danh mục nào. 
+• 
+name (VARCHAR): Tên sản phẩm. 
+• 
+description (TEXT): Mô tả chất liệu, kiểu dáng. 
+• 
+thumbnail_url (VARCHAR): Đường dẫn ảnh bìa mặc định hiển thị ngoài trang 
+chủ hoặc trang danh mục. 
+4. Bảng Product_Variants (Biến thể sản phẩm - Bảng cốt lõi) Giải quyết bài 
+toán phân loại theo Size và Màu sắc. Mỗi biến thể có một hình ảnh thực tế đi kèm. 
+• 
+id (INT, Primary Key) 
+• 
+product_id (INT, Foreign Key): Trỏ về bảng Products. 
+• 
+size (VARCHAR): Kích cỡ (VD: '34A', 'M', '38'). 
+• 
+color (VARCHAR): Màu sắc (VD: 'Đen', 'Đỏ Ren'). 
+• 
+image_url (VARCHAR): Đường dẫn ảnh chi tiết của riêng màu/biến thể đó. 
+Khi user click chọn màu, Frontend sẽ lấy ảnh này để hiển thị. 
+• 
+price (DECIMAL): Giá bán. 
+• 
+stock (INT): Số lượng tồn kho thực tế. 
+5. Bảng Vouchers (Mã giảm giá) 
+• 
+id (INT, Primary Key) 
+• 
+code (VARCHAR, Unique): Mã nhập (VD: 'SEXYNIGHT10'). 
+• 
+discount_amount (DECIMAL): Số tiền được giảm. 
+• 
+usage_limit (INT): Giới hạn số lần sử dụng tối đa. 
+• 
+expiry_date (DATETIME): Hạn sử dụng của mã. 
+6. Bảng Orders (Đơn hàng tổng) 
+• 
+id (INT, Primary Key) 
+• 
+user_id (INT, Foreign Key): Người đặt đơn. 
+• 
+voucher_id (INT, Foreign Key, Nullable): Mã giảm giá được áp dụng. 
+• 
+total_amount (DECIMAL): Tổng tiền thanh toán cuối cùng. 
+• 
+status (ENUM): Trạng thái đơn ('pending', 'preparing', 'shipping', 'completed', 
+'cancelled'). 
+• 
+is_discreet_shipping (BOOLEAN): Kích hoạt che tên sản phẩm thành "Phụ 
+kiện thời trang" trên phiếu giao. 
+7. Bảng Order_Details (Chi tiết đơn hàng) 
+• 
+id (INT, Primary Key) 
+• 
+order_id (INT, Foreign Key) 
+• 
+variant_id (INT, Foreign Key): Lưu lại chính xác khách đã mua biến thể nào. 
+• 
+quantity (INT): Số lượng mua. 
+• 
+unit_price (DECIMAL): Giá bán chốt tại thời điểm bấm đặt hàng. 
+8. Bảng Reviews (Đánh giá & Phản hồi) 
+• 
+id (INT, Primary Key) 
+• 
+user_id (INT, Foreign Key) 
+• 
+product_id (INT, Foreign Key) 
+• 
+rating (INT): Số sao đánh giá (1 đến 5). 
+• 
+comment (TEXT): Lời nhận xét của khách hàng. 
+• 
+created_at (DATETIME): Thời gian gửi đánh giá. 
+ 
+CHƯƠNG III: CÁC GIẢI THUẬT VÀ LUỒNG XỬ LÝ CỐT LÕI 
+Khác với các hệ thống thuần hiển thị thông tin, website thương mại điện tử đòi hỏi 
+sự chính xác tuyệt đối về mặt dữ liệu tài chính và kho hàng. Dưới đây là các luồng 
+giải thuật cốt lõi được áp dụng trong hệ thống: 
+3.1. Giải thuật xử lý tương tranh khi đặt hàng (Race Condition Handling) 
+• 
+Bài toán: Trong các đợt sale, kho chỉ còn đúng 1 chiếc áo lót size 34A màu 
+Đen. Có 2 khách hàng (User A và User B) cùng cho vào giỏ và cùng bấm nút 
+"Thanh toán" tại một thời điểm (chênh nhau vài mili-giây). Nếu không xử lý 
+tốt, hệ thống sẽ trừ kho về -1 và cả 2 khách đều nghĩ mình đã mua thành công, 
+dẫn đến lỗi vận hành. 
+• 
+Giải pháp (Luồng thuật toán): 
+Sử dụng cơ chế Database Transaction (Giao dịch) kết hợp với Row Locking 
+(Khóa dòng dữ liệu) của MySQL. 
+1. Bắt đầu Transaction khi User bấm đặt hàng. 
+2. Hệ thống truy vấn kiểm tra tồn kho của Biến thể (Variant) với lệnh 
+SELECT ... FOR UPDATE. Lệnh này sẽ "khóa" dòng dữ liệu của sản 
+phẩm đó lại. 
+3. Nếu tồn kho >= số lượng mua: Cho phép tạo đơn (INSERT INTO 
+Orders) → Trừ tồn kho (UPDATE Product_Variants) → Xác nhận 
+Transaction (COMMIT). Mở khóa dòng. 
+4. Nếu tồn kho < số lượng mua: Hủy bỏ toàn bộ quá trình (ROLLBACK), 
+nhả khóa và báo lỗi hết hàng cho User. Lúc này, User đến sau sẽ bị chặn 
+lại an toàn. 
+3.2. Giải thuật lọc biến thể đa chiều (Multi-dimensional Variant Filtering) 
+• 
+Bài toán: Khách hàng muốn tìm "Áo lót không gọng" (Category), "Màu Đen" 
+(Color), "Size 36B" (Size), và "Giá dưới 500k". Dữ liệu nằm rải rác ở nhiều 
+bảng khác nhau. 
+• 
+Giải pháp: Xây dựng thuật toán tạo truy vấn động (Dynamic Query Builder) 
+kết hợp kỹ thuật JOIN các bảng. 
+1. Nhận mảng (array) các tham số bộ lọc từ Frontend gửi xuống. 
+2. Hệ thống lấy bảng Product_Variants làm trung tâm. Đi từ Biến thể → 
+nối (JOIN) sang bảng Products → nối sang bảng Categories. 
+3. Áp dụng các điều kiện logic AND: Chỉ trả về những Sản phẩm 
+(Products) có ít nhất 1 Biến thể thỏa mãn tất cả các điều kiện về màu, 
+size, giá và thuộc đúng danh mục yêu cầu. 
+3.3. Giải thuật xác thực và áp dụng Voucher (Voucher Validation Logic) 
+• 
+Bài toán: Đảm bảo mã giảm giá không bị lạm dụng, không dùng quá hạn và 
+tính toán đúng số tiền giảm. 
+• 
+Giải pháp (Luồng thuật toán): 
+1. Input: Nhận Voucher_Code và Total_Amount (Tổng tiền đơn hàng) từ 
+giỏ hàng. 
+2. Check 1 (Tồn tại & Hạn dùng): Truy vấn DB xem mã có tồn tại và 
+expiry_date còn hạn hay không. Nếu → Trả về lỗi. 
+3. Check 2 (Giới hạn sử dụng): Kiểm tra usage_limit. Nếu bằng 0 → Trả 
+về lỗi "Mã đã hết lượt sử dụng". 
+4. Tính toán: Tiền thanh toán cuối = Total_Amount - discount_amount. 
+(Lưu ý thuật toán chặn số âm: Nếu tiền giảm > tổng tiền thì Tiền thanh 
+toán cuối = 0). 
+5. Output: Trả về số tiền cuối cùng cho Frontend. Khi đơn hàng tạo thành 
+công, tiến hành trừ usage_limit đi 1 đơn vị trong DB. 
+3.4. Giải thuật ẩn danh đơn hàng nhạy cảm (Discreet Shipping Masking) 
+• 
+Bài toán: Xử lý yêu cầu che tên sản phẩm nhạy cảm khi nhân viên in vận đơn 
+gửi cho shipper. 
+• 
+Giải pháp (Luồng Middleware Hậu kỳ): 
+1. Khi Admin bấm nút "In Vận Đơn" (Generate Waybill), hệ thống nhận 
+Order_ID. 
+2. Truy vấn thông tin đơn hàng, kiểm tra cờ (flag) is_discreet_shipping. 
+3. Nếu FALSE: Lấy thẳng tên thật của sản phẩm từ bảng Products và in ra. 
+4. Nếu TRUE: Thuật toán duyệt qua từng món hàng trong đơn. Truy xuất 
+lên bảng Categories để kiểm tra cờ is_age_restricted. Nếu thuộc danh 
+mục nhạy cảm, thuật toán sẽ thực hiện chuỗi thay thế (String Replace), 
+ghi đè tên món hàng thành giá trị mặc định là "Phụ kiện thời trang" 
+trước khi xuất file PDF/máy in. Các món hàng bình thường khác (như 
+Áo thun, Giày) trong cùng đơn đó vẫn giữ nguyên tên. 
+ 
+ 
+ 

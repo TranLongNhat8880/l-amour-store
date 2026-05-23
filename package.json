@@ -1,0 +1,10 @@
+{
+  "name": "l-amour-store",
+  "version": "1.0.0",
+  "description": "Root runner for L'Amour Store frontend and backend",
+  "scripts": {
+    "dev": "node run-dev.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

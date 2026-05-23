@@ -33,6 +33,7 @@ export function Shop() {
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [priceRange, setPriceRange] = useState<number>(3000000); // max price
+  const [sortOrder, setSortOrder] = useState<string>("newest");
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,8 +97,15 @@ export function Shop() {
   const selectedCategory = flattenCategories(categories).find(c => c.id === categoryFilter);
   const isRestricted = selectedCategory?.is_age_restricted === 1 || selectedCategory?.is_age_restricted === true;
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-  const currentProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const sortedProducts = [...products].sort((a, b) => {
+    if (sortOrder === "price_asc") return (a.min_price || 0) - (b.min_price || 0);
+    if (sortOrder === "price_desc") return (b.min_price || 0) - (a.min_price || 0);
+    // newest: default order from API (already sorted by created_at desc)
+    return 0;
+  });
+
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const currentProducts = sortedProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex flex-col md:flex-row gap-12">
@@ -201,10 +209,14 @@ export function Shop() {
             {searchQuery && (
               <Link to="/shop" className="text-xs text-rose-700 hover:underline font-bold uppercase tracking-widest">Xóa tìm kiếm</Link>
             )}
-            <select className="border-none bg-stone-50 text-xs font-bold uppercase tracking-widest text-stone-600 py-3 px-4 focus:outline-none rounded-sm cursor-pointer">
-              <option>Mới nhất</option>
-              <option>Giá tăng dần</option>
-              <option>Giá giảm dần</option>
+            <select
+              value={sortOrder}
+              onChange={(e) => { setSortOrder(e.target.value); setCurrentPage(1); }}
+              className="border border-stone-200 bg-white text-xs font-bold uppercase tracking-widest text-stone-600 py-3 px-4 focus:outline-none focus:border-rose-400 rounded-sm cursor-pointer transition-colors hover:border-stone-400"
+            >
+              <option value="newest">Mới nhất</option>
+              <option value="price_asc">Giá tăng dần</option>
+              <option value="price_desc">Giá giảm dần</option>
             </select>
           </div>
         </div>
@@ -234,6 +246,7 @@ export function Shop() {
                   <img 
                     src={product.thumbnail_url || "https://images.unsplash.com/photo-1668191219162-b58465065deb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"} 
                     alt={product.name}
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                   />
                   

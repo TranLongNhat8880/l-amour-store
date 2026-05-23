@@ -21,6 +21,8 @@ import { AdminUsers } from "./pages/admin/Users";
 import { AdminReviews } from "./pages/admin/Reviews";
 import { AdminNotifications } from "./pages/admin/Notifications";
 import { AdminSettings } from "./pages/admin/Settings";
+import { NotFound } from "./pages/NotFound";
+import { OrderSuccess } from "./pages/OrderSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +43,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "checkout", Component: Checkout },
           { path: "profile", Component: Profile },
+          { path: "order-success", Component: OrderSuccess },
         ]
       },
     ],
@@ -65,5 +68,7 @@ export const router = createBrowserRouter([
         ]
       }
     ]
-  }
+  },
+  // 404 - catch all
+  { path: "*", Component: NotFound },
 ]);

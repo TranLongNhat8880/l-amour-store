@@ -7,6 +7,7 @@ import { useAuthStore } from "../../store/authStore";
 import axiosClient from "../../api/axiosClient";
 import { toast } from "sonner";
 import { AddressSelector } from "../components/AddressSelector";
+import { useOrderSuccessStore } from "../../store/orderSuccessStore";
 
 interface Address {
   id: string;
@@ -21,6 +22,7 @@ export function Checkout() {
   const navigate = useNavigate();
   const { getSelectedItems, removeSelectedItems, getSelectedTotalPrice, removeFromCart } = useCartStore();
   const { user } = useAuthStore();
+  const setOrderSuccess = useOrderSuccessStore(state => state.setOrder);
   
   const cartItems = getSelectedItems();
   const subtotal = getSelectedTotalPrice();
@@ -135,7 +137,7 @@ export function Checkout() {
         quantity: item.quantity
       }));
 
-      await axiosClient.post("/orders/checkout", {
+      const res: any = await axiosClient.post("/orders/checkout", {
         items,
         voucher_code: discount > 0 ? voucher : null,
         is_discreet_shipping: isDiscreetShipping,
@@ -148,9 +150,23 @@ export function Checkout() {
         }
       });
 
+      // Save order data to store for the success page
+      setOrderSuccess({
+        orderId: res.data?.order_id || res.data?.id || "—",
+        items: cartItems,
+        shippingAddress: {
+          full_name: selectedAddress.full_name,
+          phone: selectedAddress.phone,
+          address_line: selectedAddress.address_line,
+          city: selectedAddress.city,
+        },
+        isDiscreet: isDiscreetShipping,
+        total: total,
+      });
+
       toast.success("Đặt hàng thành công!");
       removeSelectedItems();
-      navigate("/profile");
+      navigate("/order-success");
     } catch (error: any) {
       toast.error(error.message || "Đặt hàng thất bại, vui lòng thử lại");
     } finally {

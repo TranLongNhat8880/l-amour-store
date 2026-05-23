@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import { formatPrice } from "../data";
 import { Shield, Lock, Trash2, MapPin, Plus, CheckCircle2, AlertCircle } from "lucide-react";
@@ -31,6 +31,7 @@ export function Checkout() {
   const [voucher, setVoucher] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const isCheckingOut = useRef(false); // prevent cart-empty redirect after checkout
 
   // Address book state
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -44,8 +45,8 @@ export function Checkout() {
   const total = subtotal + shippingCost - discount;
 
   useEffect(() => {
-    // Redirect if no items selected
-    if (cartItems.length === 0) {
+    // Redirect if no items selected — but NOT when we just checked out
+    if (cartItems.length === 0 && !isCheckingOut.current) {
       navigate('/cart');
       return;
     }
@@ -150,9 +151,15 @@ export function Checkout() {
         }
       });
 
+      // axiosClient interceptor unwraps response.data once,
+      // so res = { success, message, data: { order_id } }
+      console.log("[Checkout] API response:", res);
+      const orderId = res?.data?.order_id || res?.order_id || "#??";
+      console.log("[Checkout] Extracted orderId:", orderId);
+
       // Save order data to store for the success page
       setOrderSuccess({
-        orderId: res.data?.order_id || res.data?.id || "—",
+        orderId,
         items: cartItems,
         shippingAddress: {
           full_name: selectedAddress.full_name,
@@ -165,9 +172,11 @@ export function Checkout() {
       });
 
       toast.success("Đặt hàng thành công!");
+      isCheckingOut.current = true; // block the cart-redirect guard
       removeSelectedItems();
       navigate("/order-success");
     } catch (error: any) {
+      console.error("[Checkout] Error:", error);
       toast.error(error.message || "Đặt hàng thất bại, vui lòng thử lại");
     } finally {
       setIsLoading(false);

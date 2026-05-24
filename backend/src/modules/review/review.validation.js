@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const reviewValidation = {
     create: Joi.object({
-        product_id: Joi.number().integer().required(),
+        product_id: Joi.string().required(),
         rating: Joi.number().integer().min(1).max(5).required().messages({
             'number.min': 'Rating tối thiểu là 1 sao',
             'number.max': 'Rating tối đa là 5 sao',

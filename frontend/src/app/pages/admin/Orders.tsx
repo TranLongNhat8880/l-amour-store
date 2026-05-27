@@ -201,6 +201,7 @@ export function AdminOrders() {
 
       {/* Orders List */}
       <div className="bg-white rounded-sm shadow-sm border border-stone-100 overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-stone-50 border-b border-stone-100">
@@ -276,6 +277,7 @@ export function AdminOrders() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Order Details Modal */}

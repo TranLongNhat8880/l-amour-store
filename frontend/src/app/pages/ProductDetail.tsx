@@ -182,8 +182,8 @@ export function ProductDetail() {
         {/* Product Image */}
         <div className="w-full md:w-1/2">
           <div className="aspect-[3/4] bg-stone-100 overflow-hidden rounded-sm relative">
-            <img 
-              src={mainImage} 
+            <img
+              src={mainImage}
               alt={product.name}
               className="w-full h-full object-cover"
             />
@@ -290,28 +290,28 @@ export function ProductDetail() {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-4 pt-4 border-t border-stone-100">
+            <div className="hidden md:flex gap-4 pt-4 border-t border-stone-100">
               <div className="flex border border-stone-200 rounded-sm">
-                <button 
+                <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="px-4 py-3 text-stone-500 hover:text-rose-700 transition-colors"
                 >
                   -
                 </button>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   value={quantity}
                   readOnly
                   className="w-12 text-center text-stone-900 font-medium focus:outline-none focus:ring-0 bg-transparent"
                 />
-                <button 
+                <button
                   onClick={() => setQuantity(Math.min(stock, quantity + 1))}
                   className="px-4 py-3 text-stone-500 hover:text-rose-700 transition-colors"
                 >
                   +
                 </button>
               </div>
-              <button 
+              <button
                 onClick={handleAddToCart}
                 disabled={stock === 0}
                 className={`flex-1 flex justify-center items-center px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors rounded-sm
@@ -352,6 +352,47 @@ export function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Sticky Add to Cart Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-stone-100 shadow-2xl z-40 px-4 py-3 flex gap-3">
+        <div className="flex border border-stone-200 rounded-sm shrink-0">
+          <button
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            className="px-4 py-3 text-stone-500 hover:text-rose-700 text-lg font-bold"
+          >
+            -
+          </button>
+          <span className="w-10 flex items-center justify-center text-stone-900 font-medium">{quantity}</span>
+          <button
+            onClick={() => setQuantity(Math.min(stock, quantity + 1))}
+            className="px-4 py-3 text-stone-500 hover:text-rose-700 text-lg font-bold"
+          >
+            +
+          </button>
+        </div>
+        <button
+          onClick={handleAddToCart}
+          disabled={stock === 0}
+          className={`flex-1 flex justify-center items-center py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors rounded-sm
+            ${stock > 0 ? 'bg-rose-800 active:bg-rose-900' : 'bg-stone-300 cursor-not-allowed'}
+          `}
+        >
+          {stock === 0 ? 'Hết hàng' : 'Thêm Vào Giỏ'}
+        </button>
+        <button
+          onClick={toggleWishlist}
+          className={`p-3 border rounded-sm shrink-0 transition-all ${
+            isInWishlist(product.id)
+              ? "bg-rose-50 border-rose-200 text-rose-800"
+              : "border-stone-200 text-stone-400"
+          }`}
+        >
+          <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? "fill-rose-800" : ""}`} />
+        </button>
+      </div>
+
+      {/* Bottom padding to prevent content hidden behind sticky bar on mobile */}
+      <div className="md:hidden h-20" />
 
       {/* Reviews Section */}
       <div className="mt-24 border-t border-stone-100 pt-16">

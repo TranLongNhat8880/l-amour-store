@@ -264,12 +264,47 @@ export function Profile() {
   };
 
   return (
-    <div className="bg-stone-50 min-h-screen py-12">
+    <div className="bg-stone-50 min-h-screen py-6 md:py-12">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Mobile Tab Strip — chỉ hiện trên mobile */}
+        <div className="md:hidden mb-4">
+          {/* User Info */}
+          <div className="flex items-center gap-3 mb-4 bg-white p-4 rounded-sm shadow-sm border border-stone-100">
+            <div className="w-12 h-12 bg-rose-100 text-rose-700 rounded-full flex items-center justify-center shrink-0">
+              <User className="w-6 h-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-bold text-stone-900 truncate">{user?.full_name}</p>
+              <p className="text-xs text-stone-400 truncate">{user?.email}</p>
+            </div>
+            <button onClick={() => setIsLogoutModalOpen(true)} className="ml-auto p-2 text-rose-700">
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
+          {/* Tab Buttons */}
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+            <button onClick={() => setActiveTab('orders')} className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide whitespace-nowrap shrink-0 transition-colors ${activeTab === 'orders' ? 'bg-rose-800 text-white' : 'bg-white text-stone-600 border border-stone-200'}`}>
+              <Package className="w-3.5 h-3.5" /> Đơn hàng
+            </button>
+            <button onClick={() => setActiveTab('addresses')} className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide whitespace-nowrap shrink-0 transition-colors ${activeTab === 'addresses' ? 'bg-rose-800 text-white' : 'bg-white text-stone-600 border border-stone-200'}`}>
+              <MapPin className="w-3.5 h-3.5" /> Địa chỉ
+              {addresses.length > 0 && <span className="bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded-full text-[10px]">{addresses.length}</span>}
+            </button>
+            <button onClick={() => setActiveTab('notifications')} className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide whitespace-nowrap shrink-0 transition-colors ${activeTab === 'notifications' ? 'bg-rose-800 text-white' : 'bg-white text-stone-600 border border-stone-200'}`}>
+              <Bell className="w-3.5 h-3.5" /> Thông báo
+              {unreadCount > 0 && <span className="bg-rose-600 text-white px-1.5 py-0.5 rounded-full text-[10px]">{unreadCount}</span>}
+            </button>
+            <button onClick={() => setActiveTab('sessions')} className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide whitespace-nowrap shrink-0 transition-colors ${activeTab === 'sessions' ? 'bg-rose-800 text-white' : 'bg-white text-stone-600 border border-stone-200'}`}>
+              <CreditCard className="w-3.5 h-3.5" /> Bảo mật
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-col md:flex-row gap-8">
           
-          {/* Sidebar */}
-          <aside className="w-full md:w-72 shrink-0">
+          {/* Sidebar — Desktop only */}
+          <aside className="hidden md:block w-72 shrink-0">
             <div className="bg-white p-8 rounded-sm shadow-sm border border-stone-100 text-center">
               <div className="w-20 h-20 bg-rose-100 text-rose-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <User className="w-10 h-10" />

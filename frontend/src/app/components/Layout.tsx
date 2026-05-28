@@ -57,7 +57,7 @@ export function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-rose-50/30 flex flex-col font-sans text-stone-800 selection:bg-rose-200">
+    <div className="min-h-screen bg-rose-50/30 flex flex-col font-sans text-stone-800 selection:bg-rose-200 overflow-x-hidden w-full">
       <ScrollToTop />
       <AIMuse />
       {/* Top Notification Bar */}
@@ -95,22 +95,22 @@ export function Layout() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-rose-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-20 relative">
             {/* Mobile menu button */}
-            <div className="flex items-center sm:hidden">
+            <div className="flex items-center sm:hidden z-10">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-stone-500 hover:text-rose-700 p-2"
+                className="text-stone-500 hover:text-rose-700 p-2 -ml-2"
               >
                 <Menu className="h-6 w-6" />
               </button>
             </div>
 
             {/* Logo */}
-            <div className="flex-shrink-0 flex items-center justify-center sm:justify-start w-full sm:w-auto">
-              <Link to="/" className="flex items-center gap-3">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none sm:relative sm:inset-auto sm:justify-start sm:w-auto sm:pointer-events-auto">
+              <Link to="/" className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
                 <img src="/assets/logo-final.png" alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-                <span className="text-3xl font-serif font-semibold tracking-tighter text-rose-900">
+                <span className="text-2xl sm:text-3xl font-serif font-semibold tracking-tighter text-rose-900">
                   L'AMOUR
                 </span>
               </Link>
@@ -130,10 +130,10 @@ export function Layout() {
             </nav>
 
             {/* Right Icons */}
-            <div className="flex items-center space-x-5">
+            <div className="flex items-center space-x-3 sm:space-x-5 z-10">
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="text-stone-500 hover:text-rose-700 transition-colors hidden sm:block"
+                className="text-stone-500 hover:text-rose-700 transition-colors"
               >
                 <Search className="h-5 w-5" />
               </button>

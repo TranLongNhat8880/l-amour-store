@@ -309,37 +309,42 @@ export function Shop() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-x-8 sm:gap-y-12">
             {currentProducts.map(product => (
-              <Link key={product.id} to={`/product/${product.id}`} className="group block">
-                <div className="relative aspect-[3/4] bg-stone-50 mb-5 overflow-hidden rounded-sm shadow-sm">
-                  <img 
-                    src={product.thumbnail_url || "https://images.unsplash.com/photo-1668191219162-b58465065deb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"} 
+              <Link key={product.id} to={`/product/${product.id}`} className="group block bg-white sm:bg-transparent rounded-lg sm:rounded-none overflow-hidden shadow-sm sm:shadow-none border border-stone-100 sm:border-none hover:shadow-md sm:hover:shadow-none transition-shadow">
+                {/* Image */}
+                <div className="relative aspect-[3/4] bg-stone-50 overflow-hidden">
+                  <img
+                    src={product.thumbnail_url || "https://images.unsplash.com/photo-1668191219162-b58465065deb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"}
                     alt={product.name}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                   />
-                  
+
                   {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-stone-900/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  
+                  <div className="absolute inset-0 bg-stone-900/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+
                   {product.is_age_restricted === 1 && (
-                    <div className="absolute top-3 left-3 bg-rose-900/90 backdrop-blur-md text-white text-[9px] font-bold px-2 py-1 uppercase tracking-[0.2em] rounded-sm shadow-lg">
-                      Adult Only
+                    <div className="absolute top-2 left-2 bg-rose-900/90 backdrop-blur-md text-white text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider rounded-sm shadow">
+                      18+
                     </div>
                   )}
 
                   {product.total_stock === 0 && (
                     <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
-                      <span className="bg-stone-900 text-white text-[10px] font-bold px-4 py-2 uppercase tracking-[0.3em]">Hết hàng</span>
+                      <span className="bg-stone-900 text-white text-[9px] sm:text-[10px] font-bold px-3 py-1.5 uppercase tracking-widest">Hết hàng</span>
                     </div>
                   )}
                 </div>
-                <div className="space-y-1.5 text-center">
-                  <p className="text-[10px] text-rose-800 font-bold uppercase tracking-[0.2em]">{product.category_name}</p>
-                  <h3 className="font-serif text-lg text-stone-900 group-hover:text-rose-800 transition-colors px-2 line-clamp-1">{product.name}</h3>
-                  <p className="text-stone-900 font-bold text-base">{formatPrice(product.min_price || 0)}</p>
-                  <div className="flex items-center justify-center gap-3 text-xs text-stone-500 mt-2">
+
+                {/* Info */}
+                <div className="p-2 sm:p-0 sm:mt-4 sm:text-center">
+                  <p className="text-[9px] sm:text-[10px] text-rose-700 font-bold uppercase tracking-wider truncate mb-0.5">{product.category_name}</p>
+                  <h3 className="font-serif text-[13px] sm:text-lg text-stone-900 group-hover:text-rose-800 transition-colors line-clamp-1 leading-snug">{product.name}</h3>
+                  <p className="text-rose-900 font-bold text-sm sm:text-base mt-0.5">{formatPrice(product.min_price || 0)}</p>
+
+                  {/* Desktop: full rating row */}
+                  <div className="hidden sm:flex items-center justify-center gap-3 text-xs text-stone-500 mt-2">
                     {product.review_count > 0 ? (
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -352,9 +357,23 @@ export function Shop() {
                     <span className="text-[10px] text-stone-300">|</span>
                     <span>Đã bán {product.sold_count || 0}</span>
                   </div>
+
+                  {/* Mobile: chỉ hiện rating gọn */}
+                  <div className="flex sm:hidden items-center gap-1 mt-0.5">
+                    {product.review_count > 0 ? (
+                      <>
+                        <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                        <span className="text-[10px] text-stone-500 font-medium">{Number(product.rating).toFixed(1)}</span>
+                        <span className="text-[10px] text-stone-300 ml-auto">bán {product.sold_count || 0}</span>
+                      </>
+                    ) : (
+                      <span className="text-[10px] text-stone-400 italic">Mới</span>
+                    )}
+                  </div>
                 </div>
               </Link>
             ))}
+
             {products.length === 0 && (
               <div className="col-span-full flex flex-col items-center justify-center py-32 bg-stone-50 rounded-sm border border-dashed border-stone-200">
                 <Filter className="w-12 h-12 text-stone-200 mb-4" />

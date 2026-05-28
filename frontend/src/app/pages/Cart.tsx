@@ -5,15 +5,15 @@ import { useCartStore, CartItem } from "../../store/cartStore";
 
 export function Cart() {
   const navigate = useNavigate();
-  const { 
-    items, 
+  const {
+    items,
     selectedItemIds,
-    removeFromCart, 
-    updateQuantity, 
+    removeFromCart,
+    updateQuantity,
     toggleSelectItem,
     toggleSelectGroup,
     toggleSelectAll,
-    getSelectedTotalPrice 
+    getSelectedTotalPrice
   } = useCartStore();
 
   const subtotal = getSelectedTotalPrice();
@@ -40,8 +40,8 @@ export function Cart() {
         <p className="text-stone-500 mb-10 max-w-md mx-auto font-light leading-relaxed">
           Có vẻ như bạn chưa chọn được món đồ nào ưng ý. Hãy khám phá những bộ sưu tập quyến rũ nhất của L'Amour nhé.
         </p>
-        <Link 
-          to="/shop" 
+        <Link
+          to="/shop"
           className="px-10 py-4 bg-rose-800 text-white font-bold uppercase tracking-widest text-xs hover:bg-rose-700 transition-all rounded-sm shadow-xl shadow-rose-100"
         >
           Khám Phá Ngay
@@ -51,7 +51,7 @@ export function Cart() {
   }
 
   return (
-    <div className="bg-stone-50 min-h-screen pb-20">
+    <div className="bg-stone-50 min-h-screen pb-20 lg:pb-0">
       {/* Header section */}
       <div className="bg-rose-950 border-b border-rose-900 mb-10 relative overflow-hidden">
         {/* Decorative background element */}
@@ -72,8 +72,8 @@ export function Cart() {
           {/* Cart Items */}
           <div className="flex-1 space-y-8">
             <div className="flex items-center gap-3 px-2">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 id="selectAll"
                 checked={isAllSelected}
                 onChange={toggleSelectAll}
@@ -91,74 +91,80 @@ export function Cart() {
 
               return (
                 <div key={productId} className="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden transition-all hover:shadow-md">
-                  <div className="bg-stone-50/80 px-6 py-4 border-b border-stone-100 flex items-center gap-3">
+                  <div className="bg-stone-50/80 px-4 py-3 border-b border-stone-100 flex items-center gap-3">
                     <input 
                       type="checkbox"
                       checked={isGroupSelected}
                       onChange={(e) => toggleSelectGroup(productId, e.target.checked)}
-                      className="w-5 h-5 rounded-full border-stone-300 text-rose-900 focus:ring-rose-900 transition-all cursor-pointer accent-rose-900"
+                      className="w-4 h-4 rounded-full border-stone-300 text-rose-900 focus:ring-rose-900 transition-all cursor-pointer accent-rose-900"
                     />
-                    <h3 className="font-serif text-lg text-stone-900">{productName}</h3>
+                    <h3 className="font-serif text-sm sm:text-lg text-stone-900 line-clamp-1">{productName}</h3>
                   </div>
-                  <div className="divide-y divide-stone-100">
+
+                  {/* Mobile: 2-column grid | Desktop: 1 column flex row */}
+                  <div className="grid grid-cols-2 sm:grid-cols-1 divide-x divide-y sm:divide-x-0 divide-stone-100">
                     {productGroup.map((item) => (
-                      <div key={item.variant_id} className="p-6 flex flex-col sm:flex-row gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 items-start sm:items-center hover:bg-rose-50/40 transition-colors">
-                        <input 
-                          type="checkbox"
-                          checked={selectedItemIds.includes(item.variant_id)}
-                          onChange={() => toggleSelectItem(item.variant_id)}
-                          className="w-5 h-5 rounded-full border-stone-300 text-rose-900 focus:ring-rose-900 mt-2 sm:mt-0 cursor-pointer transition-all accent-rose-900"
-                        />
+                      <div key={item.variant_id} className="relative animate-in fade-in duration-500 hover:bg-rose-50/30 transition-colors">
+                        {/* Checkbox + Delete row */}
+                        <div className="absolute top-2 left-2 z-10 flex gap-1">
+                          <input
+                            type="checkbox"
+                            checked={selectedItemIds.includes(item.variant_id)}
+                            onChange={() => toggleSelectItem(item.variant_id)}
+                            className="w-4 h-4 border-stone-300 text-rose-900 cursor-pointer accent-rose-900 rounded"
+                          />
+                        </div>
+                        <button
+                          onClick={() => removeFromCart(item.variant_id)}
+                          className="absolute top-2 right-2 z-10 p-1 text-stone-300 hover:text-rose-600 hover:bg-white rounded-full transition-all"
+                          title="Xóa"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+
                         {/* Image */}
-                        <div className="w-full sm:w-32 h-40 bg-stone-100 rounded-lg overflow-hidden shrink-0 group border border-stone-200/60 shadow-sm">
-                          <img 
-                            src={item.image_url || "https://images.unsplash.com/photo-1668191219162-b58465065deb?w=400&q=80"} 
-                            alt={item.name} 
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        <div className="aspect-[3/4] bg-stone-100 overflow-hidden">
+                          <img
+                            src={item.image_url || "https://images.unsplash.com/photo-1668191219162-b58465065deb?w=400&q=80"}
+                            alt={item.name}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                           />
                         </div>
 
                         {/* Info */}
-                        <div className="flex-1 flex flex-col justify-between h-full py-1">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center gap-2 mb-3">
-                                <span className="px-2.5 py-1 bg-rose-50 text-rose-800 text-[10px] font-bold uppercase tracking-wider rounded border border-rose-100 shadow-sm">Màu: {item.color}</span>
-                                <span className="px-2.5 py-1 bg-stone-100 text-stone-700 text-[10px] font-bold uppercase tracking-wider rounded border border-stone-200 shadow-sm">Size: {item.size}</span>
-                              </div>
-                              <p className="text-xl font-medium text-rose-900 tracking-tight">{formatPrice(item.price)}</p>
-                            </div>
-                            <button 
-                              onClick={() => removeFromCart(item.variant_id)}
-                              className="p-2 text-stone-300 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-all"
-                              title="Xóa khỏi giỏ hàng"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
+                        <div className="p-2 sm:p-3">
+                          <div className="flex flex-wrap gap-1 mb-1.5">
+                            <span className="px-1.5 py-0.5 bg-rose-50 text-rose-800 text-[9px] sm:text-[10px] font-bold uppercase rounded border border-rose-100">{item.color}</span>
+                            <span className="px-1.5 py-0.5 bg-stone-100 text-stone-700 text-[9px] sm:text-[10px] font-bold uppercase rounded border border-stone-200">{item.size}</span>
                           </div>
+                          <p className="text-sm font-bold text-rose-900">{formatPrice(item.price)}</p>
 
-                          <div className="flex items-center justify-between mt-6">
-                            <div className="flex items-center border border-stone-200 rounded-md bg-white shadow-sm overflow-hidden">
-                              <button 
+                          {/* Quantity controls */}
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center border border-stone-200 rounded bg-white overflow-hidden">
+                              <button
                                 onClick={() => updateQuantity(item.variant_id, item.quantity - 1)}
-                                className="px-3 py-2 text-stone-400 hover:text-rose-800 hover:bg-rose-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-stone-400"
+                                className="px-2 py-1 text-stone-400 hover:text-rose-800 hover:bg-rose-50 transition-colors disabled:opacity-30"
                                 disabled={item.quantity <= 1}
                               >
-                                <Minus className="w-4 h-4" />
+                                <Minus className="w-3 h-3" />
                               </button>
-                              <span className="w-12 text-center text-sm font-bold text-stone-800">{item.quantity}</span>
-                              <button 
+                              <span className="w-6 text-center text-xs font-bold text-stone-800">{item.quantity}</span>
+                              <button
                                 onClick={() => updateQuantity(item.variant_id, item.quantity + 1)}
-                                className="px-3 py-2 text-stone-400 hover:text-rose-800 hover:bg-rose-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-stone-400"
+                                className="px-2 py-1 text-stone-400 hover:text-rose-800 hover:bg-rose-50 transition-colors disabled:opacity-30"
                                 disabled={item.quantity >= item.stock}
                               >
-                                <Plus className="w-4 h-4" />
+                                <Plus className="w-3 h-3" />
                               </button>
                             </div>
-                            <p className="font-bold text-stone-900 text-lg">
+                            <p className="text-xs font-bold text-stone-700 hidden sm:block">
                               {formatPrice(item.price * item.quantity)}
                             </p>
                           </div>
+                          <p className="text-xs font-bold text-stone-700 mt-1 sm:hidden">
+                            = {formatPrice(item.price * item.quantity)}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -187,10 +193,10 @@ export function Cart() {
           </div>
 
           {/* Order Summary */}
-          <div className="w-full lg:w-96 shrink-0">
+          <div className="hidden lg:block w-96 shrink-0">
             <div className="bg-white p-8 rounded-sm shadow-xl border border-stone-100 sticky top-28">
               <h2 className="text-xl font-bold text-stone-900 mb-8 uppercase tracking-widest text-center border-b border-stone-100 pb-4">Thanh toán</h2>
-              
+
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-stone-500 font-light">
                   <span>Tạm tính ({selectedItemIds.length} món)</span>
@@ -214,7 +220,7 @@ export function Cart() {
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => navigate("/checkout")}
                 disabled={selectedItemIds.length === 0}
                 className="w-full bg-stone-900 hover:bg-stone-800 disabled:bg-stone-300 disabled:cursor-not-allowed text-white py-4 font-bold uppercase tracking-widest text-xs flex justify-center items-center gap-2 transition-all rounded-sm shadow-lg group"
@@ -230,6 +236,23 @@ export function Cart() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Sticky Checkout Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-stone-100 shadow-2xl z-40 px-4 py-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs text-stone-500">{selectedItemIds.length} món • Tổng cộng</span>
+          <span className="text-base font-bold text-rose-900">
+            {formatPrice(subtotal > 0 ? (subtotal >= 500000 ? subtotal : total) : 0)}
+          </span>
+        </div>
+        <button
+          onClick={() => navigate("/checkout")}
+          disabled={selectedItemIds.length === 0}
+          className="w-full bg-stone-900 hover:bg-stone-800 disabled:bg-stone-300 disabled:cursor-not-allowed text-white py-3.5 font-bold uppercase tracking-widest text-xs flex justify-center items-center gap-2 transition-all rounded-sm shadow-lg"
+        >
+          Tiến hành thanh toán <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
